@@ -1,22 +1,28 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { PGlite } from "@electric-sql/pglite";
+import process from "node:process";
 import { Server } from "hyper-express";
+import pg from "pg";
 
-const db = new PGlite("./db/pgdata");
+const { Pool } = pg;
+
 const server = new Server();
 
 type RequestBody = { sql: string; params: any[]; method: string; };
 
+const db = new Pool({ connectionString: process.env.DATABASE_URL!, max: Number(process.env.DATABASE_MAX_CONNECTIONS ?? "36") });
+
 server.post("/query", async (req, res) => {
     const { sql, params, method } = await req.json<RequestBody, RequestBody>();
 
-    console.log(sql, params, method);
-
     const sqlBody = sql.replaceAll(";", "");
     try {
-        const result = await db.query(sqlBody, params, {
+        const query = {
+            text: sqlBody,
+            values: params,
             rowMode: method === "all" ? "array" : undefined
-        });
+        };
+
+        const result = await db.query(query);
         res.json(result.rows);
     } catch (error: any) {
         res.status(500).json({ error });

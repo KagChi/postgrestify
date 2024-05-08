@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
-    "build": "swc src -d dist"
+    "build": "swc src -d dist --strip-leading-paths"
   },
   "type": "module",
   "author": "KagChi",
@@ -17,6 +17,7 @@
     "@swc/cli": "^0.3.12",
     "@swc/core": "^1.5.2",
     "@types/node": "^20.12.8",
+    "@types/pg": "^8.11.6",
     "@typescript-eslint/eslint-plugin": "^7.8.0",
     "@typescript-eslint/parser": "^7.8.0",
     "eslint": "^8.57.0",
@@ -24,8 +25,7 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "@electric-sql/pglite": "^0.1.5",
-    "embedded-postgres": "16.2.0-beta.11",
-    "hyper-express": "^6.16.0"
+    "hyper-express": "^6.16.0",
+    "pg": "^8.11.5"
   }
 }
