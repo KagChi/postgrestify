@@ -2,17 +2,39 @@
 import process from "node:process";
 import { Server } from "hyper-express";
 import pg from "pg";
+import pino from "pino";
+
+const config = {
+    database: {
+        url: process.env.DATABASE_URL!,
+        connections: Number(process.env.DATABASE_MAX_CONNECTIONS ?? "36")
+    },
+    port: Number(process.env.PORT ?? "3000")
+};
 
 const { Pool } = pg;
-
+const db = new Pool({ connectionString: config.database.url, max: config.database.connections });
 const server = new Server();
 
 type RequestBody = { sql: string; params: any[]; method: string; };
 
-const db = new Pool({ connectionString: process.env.DATABASE_URL!, max: Number(process.env.DATABASE_MAX_CONNECTIONS ?? "36") });
+const logger = pino({
+    transport: {
+        target: "pino-pretty",
+        options: {
+            colorize: true
+        }
+    }
+});
 
 server.post("/query", async (req, res) => {
     const { sql, params, method } = await req.json<RequestBody, RequestBody>();
+
+    logger.info({
+        sql,
+        params,
+        method
+    }, `Request from ${req.ip}`);
 
     const sqlBody = sql.replaceAll(";", "");
     try {
@@ -30,5 +52,5 @@ server.post("/query", async (req, res) => {
     res.status(500).json({ error: "Unknown method value" });
 });
 
-await server.listen(3_001, "0.0.0.0");
-console.log("Server running at port 3001!");
+await server.listen(config.port, "0.0.0.0");
+logger.info(`Server running at port ${config.port}!`);
