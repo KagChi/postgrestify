@@ -9,14 +9,15 @@ const config = {
         url: process.env.DATABASE_URL!,
         connections: Number(process.env.DATABASE_MAX_CONNECTIONS ?? "36")
     },
-    port: Number(process.env.PORT ?? "3000")
+    port: Number(process.env.PORT ?? "3000"),
+    auth: process.env.AUTH!
 };
 
 const { Pool } = pg;
 const db = new Pool({ connectionString: config.database.url, max: config.database.connections });
 const server = new Server();
 
-type RequestBody = { sql: string; params: any[]; method: string; };
+type RequestBody = { sql: string; params: any[]; method: string; auth: string; };
 
 const logger = pino({
     transport: {
@@ -28,7 +29,11 @@ const logger = pino({
 });
 
 server.post("/query", async (req, res) => {
-    const { sql, params, method } = await req.json<RequestBody, RequestBody>();
+    const { sql, params, method, auth } = await req.json<RequestBody, RequestBody>();
+
+    if (auth !== config.auth) {
+        res.status(401).json({ error: "Invalid authorization token!" });
+    }
 
     logger.info({
         sql,
