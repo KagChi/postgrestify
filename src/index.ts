@@ -17,7 +17,7 @@ const { Pool } = pg;
 const db = new Pool({ connectionString: config.database.url, max: config.database.connections });
 const server = new Server();
 
-type RequestBody = { sql: string; params: any[]; method: string; auth: string; };
+type RequestBody = { sql: string; params: any[]; method: string; };
 
 const logger = pino({
     transport: {
@@ -29,9 +29,9 @@ const logger = pino({
 });
 
 server.post("/query", async (req, res) => {
-    const { sql, params, method, auth } = await req.json<RequestBody, RequestBody>();
+    const { sql, params, method } = await req.json<RequestBody, RequestBody>();
 
-    if (auth !== config.auth) {
+    if (req.headers.authorization !== config.auth) {
         res.status(401).json({ error: "Invalid authorization token!" });
     }
 
