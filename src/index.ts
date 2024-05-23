@@ -52,6 +52,7 @@ server.post("/query", async (req, res) => {
         const result = await db.query(query);
         res.json(result.rows);
     } catch (error: any) {
+        logger.error(error, "An error emitted.");
         res.status(500).json({ error });
     }
     res.status(500).json({ error: "Unknown method value" });
