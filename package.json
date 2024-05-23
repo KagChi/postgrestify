@@ -15,19 +15,19 @@
   "devDependencies": {
     "@hazmi35/eslint-config": "^13.3.1",
     "@swc/cli": "^0.3.12",
-    "@swc/core": "^1.5.2",
-    "@types/node": "^20.12.8",
+    "@swc/core": "^1.5.7",
+    "@types/node": "^20.12.12",
     "@types/pg": "^8.11.6",
     "@typescript-eslint/eslint-plugin": "^7.8.0",
     "@typescript-eslint/parser": "^7.8.0",
     "eslint": "^8.57.0",
-    "rimraf": "^5.0.5",
+    "rimraf": "^5.0.7",
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "hyper-express": "^6.16.0",
+    "hyper-express": "^6.16.2",
     "pg": "^8.11.5",
-    "pino": "^9.0.0",
+    "pino": "^9.1.0",
     "pino-pretty": "^11.0.0"
   }
 }
