@@ -33,6 +33,7 @@ server.post("/query", async (req, res) => {
 
     if (req.headers.authorization !== config.auth) {
         res.status(401).json({ error: "Invalid authorization token!" });
+        return;
     }
 
     logger.info({
