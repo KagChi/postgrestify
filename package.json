@@ -30,5 +30,5 @@
     "pino": "^9.2.0",
     "pino-pretty": "^11.2.1"
   },
-  "packageManager": "pnpm@9.15.1",
+  "packageManager": "pnpm@9.15.1"
 }
