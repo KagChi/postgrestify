@@ -4,7 +4,7 @@ WORKDIR /tmp/build
 
 RUN corepack enable && corepack prepare pnpm@latest
 
-RUN apk add --no-cache build-base git python3
+RUN apt update && apt install -y build-essential git python3
 
 COPY package*.json .
 COPY pnpm-lock.yaml .
@@ -21,11 +21,12 @@ FROM ghcr.io/hazmi35/node:20
 
 WORKDIR /app
 
-RUN apk add --no-cache tzdata
+RUN apt update && apt install -y tzdata
 
 COPY --from=build-stage /tmp/build/package.json .
 COPY --from=build-stage /tmp/build/pnpm-lock.yaml .
 COPY --from=build-stage /tmp/build/node_modules ./node_modules
 COPY --from=build-stage /tmp/build/dist ./dist
+COPY --from=build-stage /tmp/build/drizzle ./drizzle
 
 CMD node dist/index.js
